@@ -16,11 +16,16 @@ public class Card {
     private int finalBackWidth;
     private int finalBackHeight;
 
+    private int cardRank;
+    private char cardSuit;
+
     public int cardId = R.drawable.back_vert;
 
     // constructor sets the type of card and scales the card
     public Card(int cType, char suit, int value){
         this.cardType = cType;
+        this.cardRank = value;
+        this.cardSuit = suit;
         scaleCard(this.cardType);
         if(cType == 1) {
             cardId = getId(suit, value);
@@ -66,6 +71,16 @@ public class Card {
             return this.finalBackWidth;
         }
 
+    }
+
+    //returns card suit
+    public char getCardSuit() {
+        return cardSuit;
+    }
+
+    //returns card rank
+    public int getCardRank() {
+        return cardRank;
     }
 
     //returns the picture id based on the suit and value of the card

@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Random;
 
 public class GameState {
-    /**
+/**
      * External Citation: fill in later
      * https://stackoverflow.com/questions/4233626/allow-multi-line-in-edittext-view-in-android
      */
@@ -21,22 +21,31 @@ public class GameState {
     int roundNum;
     int playerScore;
     int computerScore;
-    boolean isPlayerTurn;
+    int isPlayerTurn;
     boolean isSet;
     boolean isRun;
 
     // Gamestate initialization constructor
     public GameState() {
+        //populate deck with 52 card objects
         for(int s = 0; s < 4; s++) {
             for (int v = 1; v <= 13; v++) {
                 deck.add(new Card(1, suite[s], v));
             }
         }
         Collections.shuffle(deck);
+
+        //start the discard pile
         discardPile.add(deck.get(0));
         deck.remove(0);
-        playerZeroHand = null;
-        playerOneHand = null;
+
+        //populate player 0 and player 1 hands with three cards from deck
+        for(int i = 0; i<3; i++){
+            playerZeroHand.add(deck.get(0));
+            playerOneHand.add(deck.get(1));
+            deck.remove(0);
+            deck.remove(0);
+        }
         roundNum = 1;
         playerScore = 0;
         computerScore = 0;
@@ -82,6 +91,8 @@ public class GameState {
         return roundNum;
     }
 
+    public int getIsPlayerTurn() {return isPlayerTurn;}
+
     // Setter methods
     public void setDeck(ArrayList<Card> deck) {
         this.deck = deck;
@@ -125,5 +136,107 @@ public class GameState {
                 + computerCard + "\n" + turn + "\n" + playerScoreString + "\n"
                 + computerScoreString;
         return toString;
+    }
+
+    /**
+     * determines if the player can draw a card from deck
+     * @param gameState
+     * @return
+     */
+    public boolean playerDrawDeck(GameState gameState){
+        //checks if there are cards in deck
+        if(deck.size() == 0){
+            return false;
+        }
+
+        //checks if it is currently the player's turn
+        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
+            if(this.isPlayerTurn == 0){
+                playerZeroHand.add(deck.get(0));
+                deck.remove(0);
+            }
+            else {
+                playerOneHand.add(deck.get(0));
+                deck.remove(0);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * determines if player can draw a card from discard pile
+     * @param gameState
+     * @return
+     */
+    public boolean playerDrawDiscard(GameState gameState){
+        //checks if there are cards in discard
+        if(discardPile.size() == 0){
+            return false;
+        }
+
+        //checks if it is currently the player's turn
+        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
+            if(this.isPlayerTurn == 0){
+                playerZeroHand.add(discardPile.get(0));
+                discardPile.remove(0);
+            }
+            else {
+                playerOneHand.add(discardPile.get(0));
+                discardPile.remove(0);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * determines if player can discard a card from their current hand after drawing card
+     * @param gameState
+     * @return
+     */
+    public boolean playerDiscard(GameState gameState){
+        //checks if it is currently the player's turn
+        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
+            if((this.isPlayerTurn == 0) && (this.playerZeroHand.size() == (this.roundNum + 3))){
+                Log.d("player 0 can discard",String.valueOf(playerZeroHand.size()));
+                return true;
+            }
+            else if((this.isPlayerTurn == 1) && (this.playerOneHand.size() == (this.roundNum + 3))){
+                Log.d("player 1 can discard",String.valueOf(playerOneHand.size()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * determines if player can Go Out
+     * Go Out: all of player's cards except one must be in run/set to Go Out
+     * @param gameState
+     * @return
+     */
+    public boolean playerGoOut(GameState gameState){
+        //checks if it is currently the player's turn
+        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
+            //need to check if player's hand can Go Out
+            if(this.isPlayerTurn == 0){
+            }
+            else {
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     */
+    public void sortBySuit(){
+
+    }
+
+    public void sortByRank(){
+
     }
 }
