@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class GameState {
@@ -16,8 +17,8 @@ public class GameState {
     char suite[] = new char[] {'c','s','h','d'};
     ArrayList<Card> deck = new ArrayList<Card>();
     ArrayList<Card> discardPile = new ArrayList<Card>();
-    ArrayList<Card> playerZeroHand = new ArrayList<Card>();
-    ArrayList<Card> playerOneHand = new ArrayList<Card>();
+    private static ArrayList<Card> playerZeroHand = new ArrayList<Card>();
+    private static ArrayList<Card> playerOneHand = new ArrayList<Card>();
     int roundNum;
     int playerScore;
     int computerScore;
@@ -232,11 +233,31 @@ public class GameState {
     /**
      *
      */
-    public void sortBySuit(){
-
+    public static void sortBySuit(ArrayList<Card> input){
+        Collections.sort(input, new Comparator<Card>(){
+            @Override
+            public int compare(Card c1, Card c2){
+                if(c1.getCardSuit() < c2.getCardSuit()){
+                    return 1;
+                }
+                if(c1.getCardSuit() > c2.getCardSuit()){
+                    return -1;
+                }
+                return 0;
+            }
+        });
     }
 
-    public void sortByRank(){
+    public static void sortByRank(ArrayList<Card> hand){
+        int n = hand.size();
+        for(int i = 1; i < n; i++){
+            int key = hand.get(i).getCardRank();
+            int j = i - 1;
 
+            while(j >= 0 && hand.get(j).getCardRank() > key){
+                Collections.swap(hand,j+1,j);
+                j = j -1;
+            }
+        }
     }
 }
