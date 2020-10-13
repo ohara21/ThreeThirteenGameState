@@ -14,17 +14,17 @@ public class GameState {
      * https://stackoverflow.com/questions/4233626/allow-multi-line-in-edittext-view-in-android
      */
     //creating a deck of 52 cards
-    char suite[] = new char[] {'c','s','h','d'};
-    ArrayList<Card> deck = new ArrayList<Card>();
-    ArrayList<Card> discardPile = new ArrayList<Card>();
-    ArrayList<Card> player0Hand = new ArrayList<Card>();
-    ArrayList<Card> player1Hand = new ArrayList<Card>();
-    int roundNum;
-    int player0Score;
-    int player1Score;
-    int isPlayerTurn;
-    boolean isSet;
-    boolean isRun;
+    private char suite[] = new char[] {'c','s','h','d'};
+    private ArrayList<Card> deck = new ArrayList<Card>();
+    private ArrayList<Card> discardPile = new ArrayList<Card>();
+    private Hand player0Hand  = new Hand();
+    private static Hand player1Hand = new Hand();
+    private int roundNum;
+    private int player0Score;
+    private int player1Score;
+    private int isPlayerTurn;
+    private boolean isSet;
+    private boolean isRun;
 
     // Gamestate initialization constructor
     public GameState() {
@@ -54,6 +54,7 @@ public class GameState {
 
     // GameState clone constructor
     public GameState(GameState gameState) {
+        // For all array list: need to copy Card object into copyArrayList
         this.deck = gameState.getDeck();
         this.discardPile = gameState.getDiscardPile();
         this.player0Hand = gameState.getPlayer0Hand();
@@ -72,11 +73,11 @@ public class GameState {
         return discardPile;
     }
 
-    public ArrayList<Card> getPlayer1Hand() {
+    public Hand getPlayer1Hand() {
         return player1Hand;
     }
 
-    public ArrayList<Card> getPlayer0Hand() {
+    public Hand getPlayer0Hand() {
         return  player0Hand;
     }
 
@@ -103,11 +104,11 @@ public class GameState {
         this.discardPile = discardPile;
     }
 
-    public void setPlayer1Hand(ArrayList<Card> player1Hand) {
+    public void setPlayer1Hand(Hand player1Hand) {
         this.player1Hand = player1Hand;
     }
 
-    public void setPlayer0Hand(ArrayList<Card> player0Hand) {
+    public void setPlayer0Hand(Hand player0Hand) {
         this.player0Hand = player0Hand;
     }
 
@@ -151,7 +152,7 @@ public class GameState {
         }
 
         //checks if it is currently the player's turn
-        if(canMove(gameState) == true){
+        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
             if(this.isPlayerTurn == 0){
                 player0Hand.add(deck.get(0));
                 deck.remove(0);
@@ -226,42 +227,7 @@ public class GameState {
         return false;
     }
 
-//    /**
-//     * sorts a given hand by their rank in ascending order
-//     * @param hand
-//     * @return a sorted array list of a given hand
-//     *
-//     * External Citation:
-//     * Problem: Wanted to sort an array list
-//     * Date: 10/11/20
-//     * Source:https://stackoverflow.com/questions/9109890/android-java-how-to-sort-a-list-of-objects-by-a-certain-value-within-the-object
-//     * Solution: used the code
-//     */
-//    public ArrayList<Card> sortByRank(final ArrayList<Card> hand){
-//        Collections.sort(hand, new Comparator<Card>() {
-//            @Override
-//            public int compare(Card card1, Card card2) {
-//                return Integer.valueOf(card1.getCardRank()).compareTo(Integer.valueOf(card2.getCardRank()));
-//            }
-//        });
-//        return hand;
-//    }
-//
-//    /**
-//     * sorts a given hand by their suit
-//     * @param hand
-//     * @return a sorted array list of a given hand
-//     */
-//    public ArrayList<Card> sortBySuit(final ArrayList<Card> hand){
-//        Collections.sort(hand, new Comparator<Card>() {
-//            @Override
-//            public int compare(Card card1, Card card2) {
-//                //TODO: this just sorts by suit, doesn't numerically sort in each suit
-//                return Integer.valueOf(card1.getCardSuit()).compareTo(Integer.valueOf(card2.getCardSuit()));
-//            }
-//        });
-//        return hand;
-//    }
+
 
     /**
      * determines if the player can take action
@@ -276,45 +242,58 @@ public class GameState {
     }
 
 
-    public static void sortBySuit(ArrayList<Card> input){
-        Collections.sort(input, new Comparator<Card>(){
-            @Override
-            public int compare(Card c1, Card c2){
-                if(c1.getCardSuit() < c2.getCardSuit()){
-                    return 1;
-                }
-                if(c1.getCardSuit() > c2.getCardSuit()){
-                    return -1;
-                }
-                return 0;
-            }
-        });
-    }
-
-    public static void sortByRank(ArrayList<Card> hand) {
-        int n = hand.size();
-        for (int i = 1; i < n; i++) {
-            int key = hand.get(i).getCardRank();
-            int j = i - 1;
-
-            while (j >= 0 && hand.get(j).getCardRank() > key) {
-                Collections.swap(hand, j + 1, j);
-                j = j - 1;
-            }
-        }
-    }
-
-//    /**
-//     * checks the given hand by returning an array with the differences between each consecutive card
-//     * @param hand
-//     * @return an int array with calculated differences in rank
-//     */
-//    public int[] checkHand(ArrayList<Card> hand){
-//        int[] checkHand = new int[hand.size()-1];
-//        ArrayList<Card> sortedHand = sortByRank(hand);
-//        for(int i=0; i<checkHand.length; i++){
-//            checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
-//        }
-//        return checkHand;
+//    public static void sortBySuit(ArrayList<Card> input){
+//        Collections.sort(input, new Comparator<Card>(){
+//            @Override
+//            public int compare(Card c1, Card c2){
+//                if(c1.getCardSuit() < c2.getCardSuit()){
+//                    return 1;
+//                }
+//                if(c1.getCardSuit() > c2.getCardSuit()){
+//                    return -1;
+//                }
+//                return 0;
+//            }
+//        });
 //    }
+//
+//    public static void sortByRank(ArrayList<Card> hand) {
+//        int n = hand.size();
+//        for (int i = 1; i < n; i++) {
+//            int key = hand.get(i).getCardRank();
+//            int j = i - 1;
+//
+//            while (j >= 0 && hand.get(j).getCardRank() > key) {
+//                Collections.swap(hand, j + 1, j);
+//                j = j - 1;
+//            }
+//        }
+//    }
+
+    /**
+     * Sets a card value to the wild card based on the hand count
+     * @param wildCard
+     */
+    public void setWild(int wildCard){
+        //TODO: set wild card to round # + 2
+    }
+
+
+    /**
+     * checks the given hand by returning an array with the differences between each consecutive card
+     * @param hand
+     * @return an int array with calculated differences in rank
+     */
+    public int[] checkHand(ArrayList<Card> hand){
+        int[] checkHand = new int[hand.size()-1];
+        ArrayList<Card> sortedHand = sortByRank(hand);
+        for(int i=0; i<checkHand.length; i++){
+            checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
+        }
+        return checkHand;
+    }
+
+
+
+
 }
