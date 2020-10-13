@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class GameState {
@@ -16,18 +17,16 @@ public class GameState {
     char suite[] = new char[] {'c','s','h','d'};
     ArrayList<Card> deck = new ArrayList<Card>();
     ArrayList<Card> discardPile = new ArrayList<Card>();
-    ArrayList<Card> playerZeroHand = new ArrayList<Card>();
-    ArrayList<Card> playerOneHand = new ArrayList<Card>();
+    ArrayList<Card> player0Hand = new ArrayList<Card>();
+    ArrayList<Card> player1Hand = new ArrayList<Card>();
     int roundNum;
-    int playerScore;
-    int computerScore;
+    int player0Score;
+    int player1Score;
     int isPlayerTurn;
-    boolean isSet;
-    boolean isRun;
 
     // Gamestate initialization constructor
     public GameState() {
-        //populate deck with 52 card objects
+        //populate deck with 52 card objects then shuffle deck randomly
         for(int s = 0; s < 4; s++) {
             for (int v = 1; v <= 13; v++) {
                 deck.add(new Card(1, suite[s], v));
@@ -41,24 +40,24 @@ public class GameState {
 
         //populate player 0 and player 1 hands with three cards from deck
         for(int i = 0; i<3; i++){
-            playerZeroHand.add(deck.get(0));
-            playerOneHand.add(deck.get(1));
+            player0Hand.add(deck.get(0));
+            player1Hand.add(deck.get(1));
             deck.remove(0);
             deck.remove(0);
         }
         roundNum = 1;
-        playerScore = 0;
-        computerScore = 0;
+        player0Score = 0;
+        player1Score = 0;
     }
 
     // GameState clone constructor
     public GameState(GameState gameState) {
         this.deck = gameState.getDeck();
         this.discardPile = gameState.getDiscardPile();
-        this.playerZeroHand = gameState.getPlayerZeroHand();
-        this.playerOneHand = gameState.getPlayerOneHand();
-        this.playerScore = gameState.getPlayerScore();
-        this.computerScore = gameState.getComputerScore();
+        this.player0Hand = gameState.getPlayer0Hand();
+        this.player1Hand = gameState.getPlayer1Hand();
+        this.player0Score = gameState.getPlayer0Score();
+        this.player1Score = gameState.getPlayer1Score();
         this.roundNum = gameState.getRoundNum();
     }
 
@@ -71,20 +70,20 @@ public class GameState {
         return discardPile;
     }
 
-    public ArrayList<Card> getPlayerOneHand() {
-        return playerOneHand;
+    public ArrayList<Card> getPlayer1Hand() {
+        return player1Hand;
     }
 
-    public ArrayList<Card> getPlayerZeroHand() {
-        return  playerZeroHand;
+    public ArrayList<Card> getPlayer0Hand() {
+        return  player0Hand;
     }
 
-    public int getComputerScore() {
-        return computerScore;
+    public int getPlayer1Score() {
+        return player1Score;
     }
 
-    public int getPlayerScore() {
-        return playerScore;
+    public int getPlayer0Score() {
+        return player0Score;
     }
 
     public int getRoundNum() {
@@ -102,20 +101,20 @@ public class GameState {
         this.discardPile = discardPile;
     }
 
-    public void setPlayerOneHand(ArrayList<Card> playerOneHand) {
-        this.playerOneHand = playerOneHand;
+    public void setPlayer1Hand(ArrayList<Card> player1Hand) {
+        this.player1Hand = player1Hand;
     }
 
-    public void setPlayerZeroHand(ArrayList<Card> playerZeroHand) {
-        this.playerZeroHand = playerZeroHand;
+    public void setPlayer0Hand(ArrayList<Card> player0Hand) {
+        this.player0Hand = player0Hand;
     }
 
-    public void setComputerScore(int computerScore) {
-        this.computerScore = computerScore;
+    public void setPlayer1Score(int player1Score) {
+        this.player1Score = player1Score;
     }
 
-    public void setPlayerScore(int playerScore) {
-        this.playerScore = playerScore;
+    public void setPlayer0Score(int player0Score) {
+        this.player0Score = player0Score;
     }
 
     public void setRoundNum(int roundNum) {
@@ -127,11 +126,11 @@ public class GameState {
         String round = "Round number: " + roundNum;
         String deckSize = "Deck card amount: " + deck.size();
         String discardSize = "Discard pile amount: " + discardPile.size();
-        String playerCard = "Player card amount: " + playerZeroHand.size();
-        String computerCard = "Computer card amount: " + playerOneHand.size();
+        String playerCard = "Player card amount: " + player0Hand.size();
+        String computerCard = "Computer card amount: " + player1Hand.size();
         String turn = "Your turn? T/F: " + isPlayerTurn;
-        String playerScoreString = "Your score: " + playerScore;
-        String computerScoreString = "Computer's score: " + computerScore;
+        String playerScoreString = "Your score: " + player0Score;
+        String computerScoreString = "Computer's score: " + player1Score;
         String toString = round + "\n" + deckSize + "\n" + discardSize + "\n" + playerCard + "\n"
                 + computerCard + "\n" + turn + "\n" + playerScoreString + "\n"
                 + computerScoreString;
@@ -150,13 +149,13 @@ public class GameState {
         }
 
         //checks if it is currently the player's turn
-        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
+        if(canMove(gameState) == true){
             if(this.isPlayerTurn == 0){
-                playerZeroHand.add(deck.get(0));
+                player0Hand.add(deck.get(0));
                 deck.remove(0);
             }
             else {
-                playerOneHand.add(deck.get(0));
+                player1Hand.add(deck.get(0));
                 deck.remove(0);
             }
             return true;
@@ -176,13 +175,13 @@ public class GameState {
         }
 
         //checks if it is currently the player's turn
-        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
+        if(canMove(gameState) == true){
             if(this.isPlayerTurn == 0){
-                playerZeroHand.add(discardPile.get(0));
+                player0Hand.add(discardPile.get(0));
                 discardPile.remove(0);
             }
             else {
-                playerOneHand.add(discardPile.get(0));
+                player1Hand.add(discardPile.get(0));
                 discardPile.remove(0);
             }
             return true;
@@ -197,13 +196,13 @@ public class GameState {
      */
     public boolean playerDiscard(GameState gameState){
         //checks if it is currently the player's turn
-        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
-            if((this.isPlayerTurn == 0) && (this.playerZeroHand.size() == (this.roundNum + 3))){
-                Log.d("player 0 can discard",String.valueOf(playerZeroHand.size()));
+        if(canMove(gameState) == true) {
+            if((this.isPlayerTurn == 0) && (this.player0Hand.size() == (this.roundNum + 3))){
+                Log.d("player 0 can discard",String.valueOf(player0Hand.size()));
                 return true;
             }
-            else if((this.isPlayerTurn == 1) && (this.playerOneHand.size() == (this.roundNum + 3))){
-                Log.d("player 1 can discard",String.valueOf(playerOneHand.size()));
+            else if((this.isPlayerTurn == 1) && (this.player1Hand.size() == (this.roundNum + 3))){
+                Log.d("player 1 can discard",String.valueOf(player1Hand.size()));
                 return true;
             }
         }
@@ -217,26 +216,80 @@ public class GameState {
      * @return
      */
     public boolean playerGoOut(GameState gameState){
+        int[] checkGoOut = null;
         //checks if it is currently the player's turn
-        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
+        if(canMove(gameState) == true){
             //need to check if player's hand can Go Out
             if(this.isPlayerTurn == 0){
+                checkGoOut = checkHand(player0Hand);
             }
             else {
+                checkGoOut = checkHand(player1Hand);
             }
+        }
+        return false;
+    }
+
+    /**
+     * sorts a given hand by their rank in ascending order
+     * @param hand
+     * @return a sorted array list of a given hand
+     *
+     * External Citation:
+     * Problem: Wanted to sort an array list
+     * Date: 10/11/20
+     * Source:https://stackoverflow.com/questions/9109890/android-java-how-to-sort-a-list-of-objects-by-a-certain-value-within-the-object
+     * Solution: used the code
+     */
+    public ArrayList<Card> sortByRank(final ArrayList<Card> hand){
+        Collections.sort(hand, new Comparator<Card>() {
+            @Override
+            public int compare(Card card1, Card card2) {
+                return Integer.valueOf(card1.getCardRank()).compareTo(Integer.valueOf(card2.getCardRank()));
+            }
+        });
+        return hand;
+    }
+
+    /**
+     * sorts a given hand by their suit
+     * @param hand
+     * @return a sorted array list of a given hand
+     */
+    public ArrayList<Card> sortBySuit(final ArrayList<Card> hand){
+        Collections.sort(hand, new Comparator<Card>() {
+            @Override
+            public int compare(Card card1, Card card2) {
+                //TODO: this just sorts by suit, doesn't numerically sort in each suit
+                return Integer.valueOf(card1.getCardSuit()).compareTo(Integer.valueOf(card2.getCardSuit()));
+            }
+        });
+        return hand;
+    }
+
+    /**
+     * determines if the player can take action
+     * @param gameState
+     * @return
+     */
+    public boolean canMove(GameState gameState){
+        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
             return true;
         }
         return false;
     }
 
     /**
-     *
+     * checks the given hand by returning an array with the differences between each consecutive card
+     * @param hand
+     * @return an int array with calculated differences in rank
      */
-    public void sortBySuit(){
-
-    }
-
-    public void sortByRank(){
-
+    public int[] checkHand(ArrayList<Card> hand){
+        int[] checkHand = new int[hand.size()-1];
+        ArrayList<Card> sortedHand = sortByRank(hand);
+        for(int i=0; i<checkHand.length; i++){
+            checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
+        }
+        return checkHand;
     }
 }
