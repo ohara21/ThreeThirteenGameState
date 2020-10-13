@@ -23,6 +23,8 @@ public class GameState {
     int player0Score;
     int player1Score;
     int isPlayerTurn;
+    boolean isSet;
+    boolean isRun;
 
     // Gamestate initialization constructor
     public GameState() {
@@ -279,11 +281,39 @@ public class GameState {
         return false;
     }
 
-    /**
-     * checks the given hand by returning an array with the differences between each consecutive card
-     * @param hand
-     * @return an int array with calculated differences in rank
-     */
+
+    public static void sortBySuit(ArrayList<Card> input){
+        Collections.sort(input, new Comparator<Card>(){
+            @Override
+            public int compare(Card c1, Card c2){
+                if(c1.getCardSuit() < c2.getCardSuit()){
+                    return 1;
+                }
+                if(c1.getCardSuit() > c2.getCardSuit()){
+                    return -1;
+                }
+                return 0;
+            }
+        });
+    }
+
+    public static void sortByRank(ArrayList<Card> hand){
+        int n = hand.size();
+        for(int i = 1; i < n; i++){
+            int key = hand.get(i).getCardRank();
+            int j = i - 1;
+
+            while(j >= 0 && hand.get(j).getCardRank() > key){
+                Collections.swap(hand,j+1,j);
+                j = j -1;
+            }
+        }
+
+        /**
+         * checks the given hand by returning an array with the differences between each consecutive card
+         * @param hand
+         * @return an int array with calculated differences in rank
+         */
     public int[] checkHand(ArrayList<Card> hand){
         int[] checkHand = new int[hand.size()-1];
         ArrayList<Card> sortedHand = sortByRank(hand);
