@@ -222,52 +222,46 @@ public class GameState {
         //checks if it is currently the player's turn
         if(canMove(gameState) == true){
             //need to check if player's hand can Go Out
-            if(this.isPlayerTurn == 0){
-                checkGoOut = checkHand(player0Hand);
-            }
-            else {
-                checkGoOut = checkHand(player1Hand);
-            }
         }
         return false;
     }
 
-    /**
-     * sorts a given hand by their rank in ascending order
-     * @param hand
-     * @return a sorted array list of a given hand
-     *
-     * External Citation:
-     * Problem: Wanted to sort an array list
-     * Date: 10/11/20
-     * Source:https://stackoverflow.com/questions/9109890/android-java-how-to-sort-a-list-of-objects-by-a-certain-value-within-the-object
-     * Solution: used the code
-     */
-    public ArrayList<Card> sortByRank(final ArrayList<Card> hand){
-        Collections.sort(hand, new Comparator<Card>() {
-            @Override
-            public int compare(Card card1, Card card2) {
-                return Integer.valueOf(card1.getCardRank()).compareTo(Integer.valueOf(card2.getCardRank()));
-            }
-        });
-        return hand;
-    }
-
-    /**
-     * sorts a given hand by their suit
-     * @param hand
-     * @return a sorted array list of a given hand
-     */
-    public ArrayList<Card> sortBySuit(final ArrayList<Card> hand){
-        Collections.sort(hand, new Comparator<Card>() {
-            @Override
-            public int compare(Card card1, Card card2) {
-                //TODO: this just sorts by suit, doesn't numerically sort in each suit
-                return Integer.valueOf(card1.getCardSuit()).compareTo(Integer.valueOf(card2.getCardSuit()));
-            }
-        });
-        return hand;
-    }
+//    /**
+//     * sorts a given hand by their rank in ascending order
+//     * @param hand
+//     * @return a sorted array list of a given hand
+//     *
+//     * External Citation:
+//     * Problem: Wanted to sort an array list
+//     * Date: 10/11/20
+//     * Source:https://stackoverflow.com/questions/9109890/android-java-how-to-sort-a-list-of-objects-by-a-certain-value-within-the-object
+//     * Solution: used the code
+//     */
+//    public ArrayList<Card> sortByRank(final ArrayList<Card> hand){
+//        Collections.sort(hand, new Comparator<Card>() {
+//            @Override
+//            public int compare(Card card1, Card card2) {
+//                return Integer.valueOf(card1.getCardRank()).compareTo(Integer.valueOf(card2.getCardRank()));
+//            }
+//        });
+//        return hand;
+//    }
+//
+//    /**
+//     * sorts a given hand by their suit
+//     * @param hand
+//     * @return a sorted array list of a given hand
+//     */
+//    public ArrayList<Card> sortBySuit(final ArrayList<Card> hand){
+//        Collections.sort(hand, new Comparator<Card>() {
+//            @Override
+//            public int compare(Card card1, Card card2) {
+//                //TODO: this just sorts by suit, doesn't numerically sort in each suit
+//                return Integer.valueOf(card1.getCardSuit()).compareTo(Integer.valueOf(card2.getCardSuit()));
+//            }
+//        });
+//        return hand;
+//    }
 
     /**
      * determines if the player can take action
@@ -297,29 +291,30 @@ public class GameState {
         });
     }
 
-    public static void sortByRank(ArrayList<Card> hand){
+    public static void sortByRank(ArrayList<Card> hand) {
         int n = hand.size();
-        for(int i = 1; i < n; i++){
+        for (int i = 1; i < n; i++) {
             int key = hand.get(i).getCardRank();
             int j = i - 1;
 
-            while(j >= 0 && hand.get(j).getCardRank() > key){
-                Collections.swap(hand,j+1,j);
-                j = j -1;
+            while (j >= 0 && hand.get(j).getCardRank() > key) {
+                Collections.swap(hand, j + 1, j);
+                j = j - 1;
             }
         }
-
-        /**
-         * checks the given hand by returning an array with the differences between each consecutive card
-         * @param hand
-         * @return an int array with calculated differences in rank
-         */
-    public int[] checkHand(ArrayList<Card> hand){
-        int[] checkHand = new int[hand.size()-1];
-        ArrayList<Card> sortedHand = sortByRank(hand);
-        for(int i=0; i<checkHand.length; i++){
-            checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
-        }
-        return checkHand;
     }
+
+//    /**
+//     * checks the given hand by returning an array with the differences between each consecutive card
+//     * @param hand
+//     * @return an int array with calculated differences in rank
+//     */
+//    public int[] checkHand(ArrayList<Card> hand){
+//        int[] checkHand = new int[hand.size()-1];
+//        ArrayList<Card> sortedHand = sortByRank(hand);
+//        for(int i=0; i<checkHand.length; i++){
+//            checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
+//        }
+//        return checkHand;
+//    }
 }
