@@ -63,4 +63,8 @@ public class Hand {
     public void createGrouping(ArrayList<Card> Hand){
 
     }
+
+    public void addToGroup(Card add, ArrayList<Card> group){
+        
+    }
 }
