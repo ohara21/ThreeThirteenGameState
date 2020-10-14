@@ -5,6 +5,29 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class Hand {
+    private static ArrayList<Card> userHand = new ArrayList<>();
+
+    public Hand(){
+
+    }
+
+    public void addHand(Card c){
+        userHand.add(c);
+    }
+
+    public void setHand(ArrayList<Card> hand){
+        this.userHand = hand;
+    }
+
+    public ArrayList<Card> getHand(){return this.userHand;}
+
+    public int getSize(){
+       return this.userHand.size();
+    }
+
+
+
+
 
 
 
@@ -45,6 +68,8 @@ public class Hand {
         return hand;
     }
 
+
+
     /**
      *  Create grouping based on complete or incomplete sets and runs. Would be seperate from making a set / run.
      *  Only check if they have a legal set or run in hand. arrange cards based on user preference (no button) and then checks if the hands are set or run legal
@@ -64,7 +89,7 @@ public class Hand {
 
     }
 
-    public void addToGroup(Card add, ArrayList<Card> group){
-        
+    public void addToGroup(Card add, ArrayList<> group){
+
     }
 }

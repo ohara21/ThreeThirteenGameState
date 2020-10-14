@@ -18,7 +18,7 @@ public class GameState {
     private ArrayList<Card> deck = new ArrayList<Card>();
     private ArrayList<Card> discardPile = new ArrayList<Card>();
     private Hand player0Hand  = new Hand();
-    private static Hand player1Hand = new Hand();
+    private  Hand player1Hand = new Hand();
     private int roundNum;
     private int player0Score;
     private int player1Score;
@@ -40,14 +40,11 @@ public class GameState {
         discardPile.add(deck.get(0));
         deck.remove(0);
 
-        //populate player 0 and player 1 hands with three cards from deck
-        for(int i = 0; i<3; i++){
-            player0Hand.add(deck.get(0));
-            player1Hand.add(deck.get(1));
-            deck.remove(0);
-            deck.remove(0);
-        }
         roundNum = 1;
+
+        //populate player 0 and player 1 hands with three cards from deck
+        dealHand(deck, player1Hand, roundNum);
+
         player0Score = 0;
         player1Score = 0;
     }
@@ -129,8 +126,8 @@ public class GameState {
         String round = "Round number: " + roundNum;
         String deckSize = "Deck card amount: " + deck.size();
         String discardSize = "Discard pile amount: " + discardPile.size();
-        String playerCard = "Player card amount: " + player0Hand.size();
-        String computerCard = "Computer card amount: " + player1Hand.size();
+        String playerCard = "Player card amount: " + player0Hand.getSize();
+        String computerCard = "Computer card amount: " + player1Hand.getSize();
         String turn = "Your turn? T/F: " + isPlayerTurn;
         String playerScoreString = "Your score: " + player0Score;
         String computerScoreString = "Computer's score: " + player1Score;
@@ -154,11 +151,11 @@ public class GameState {
         //checks if it is currently the player's turn
         if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
             if(this.isPlayerTurn == 0){
-                player0Hand.add(deck.get(0));
+                player0Hand.addHand(deck.get(0));
                 deck.remove(0);
             }
             else {
-                player1Hand.add(deck.get(0));
+                player1Hand.addHand(deck.get(0));
                 deck.remove(0);
             }
             return true;
@@ -180,11 +177,11 @@ public class GameState {
         //checks if it is currently the player's turn
         if(canMove(gameState) == true){
             if(this.isPlayerTurn == 0){
-                player0Hand.add(discardPile.get(0));
+                player0Hand.addHand(discardPile.get(0));
                 discardPile.remove(0);
             }
             else {
-                player1Hand.add(discardPile.get(0));
+                player1Hand.addHand(discardPile.get(0));
                 discardPile.remove(0);
             }
             return true;
@@ -200,12 +197,12 @@ public class GameState {
     public boolean playerDiscard(GameState gameState){
         //checks if it is currently the player's turn
         if(canMove(gameState) == true) {
-            if((this.isPlayerTurn == 0) && (this.player0Hand.size() == (this.roundNum + 3))){
-                Log.d("player 0 can discard",String.valueOf(player0Hand.size()));
+            if((this.isPlayerTurn == 0) && (this.player0Hand.getSize() == (this.roundNum + 3))){
+                Log.d("player 0 can discard",String.valueOf(player0Hand.getSize()));
                 return true;
             }
-            else if((this.isPlayerTurn == 1) && (this.player1Hand.size() == (this.roundNum + 3))){
-                Log.d("player 1 can discard",String.valueOf(player1Hand.size()));
+            else if((this.isPlayerTurn == 1) && (this.player1Hand.getSize() == (this.roundNum + 3))){
+                Log.d("player 1 can discard",String.valueOf(player1Hand.getSize()));
                 return true;
             }
         }
@@ -286,13 +283,22 @@ public class GameState {
      */
     public int[] checkHand(ArrayList<Card> hand){
         int[] checkHand = new int[hand.size()-1];
-        ArrayList<Card> sortedHand = sortByRank(hand);
+        ArrayList<Card> sortedHand = player0Hand.sortByRank(hand);
         for(int i=0; i<checkHand.length; i++){
             checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
         }
         return checkHand;
     }
 
+    /**
+     * adds card to a users hand based on the round number
+     */
+    public void dealHand(ArrayList<Card> inputDeck, Hand user, int round){
+        for(int i = 0; i < round + 2; i++){
+            user.addHand(inputDeck.get(0));
+            inputDeck.remove(0);
+        }
+    }
 
 
 
