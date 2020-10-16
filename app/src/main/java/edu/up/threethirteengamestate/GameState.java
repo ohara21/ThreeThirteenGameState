@@ -14,7 +14,7 @@ public class GameState {
      * https://stackoverflow.com/questions/4233626/allow-multi-line-in-edittext-view-in-android
      */
     //creating a deck of 52 cards
-    private char suite[] = new char[] {'c','s','h','d'};
+    private static char suite[] = new char[] {'c','s','h','d'};
     private ArrayList<Card> deck = new ArrayList<Card>();
     private ArrayList<Card> discardPile = new ArrayList<Card>();
     private Hand player0Hand  = new Hand();
@@ -23,8 +23,6 @@ public class GameState {
     private int player0Score;
     private int player1Score;
     private int isPlayerTurn;
-    private boolean isSet;
-    private boolean isRun;
 
     // Gamestate initialization constructor
     public GameState() {
@@ -43,6 +41,7 @@ public class GameState {
         roundNum = 1;
 
         //populate player 0 and player 1 hands with three cards from deck
+        dealHand(deck, player0Hand, roundNum);
         dealHand(deck, player1Hand, roundNum);
 
         player0Score = 0;
@@ -50,15 +49,25 @@ public class GameState {
     }
 
     // GameState clone constructor
-    public GameState(GameState gameState) {
-        // For all array list: need to copy Card object into copyArrayList
-        this.deck = gameState.getDeck();
-        this.discardPile = gameState.getDiscardPile();
-        this.player0Hand = gameState.getPlayer0Hand();
-        this.player1Hand = gameState.getPlayer1Hand();
-        this.player0Score = gameState.getPlayer0Score();
-        this.player1Score = gameState.getPlayer1Score();
-        this.roundNum = gameState.getRoundNum();
+    public GameState(GameState orig) {
+        //copy deck ArrayList
+        this.deck = new ArrayList<>();
+        for(Card cDeck : orig.deck){
+            this.deck.add(new Card(cDeck));
+        }
+
+        //copy discard ArrayList
+        this.discardPile = new ArrayList<>();
+        for(Card cDisc : orig.discardPile){
+            this.discardPile.add(new Card (cDisc));
+        }
+
+        //copy the other instance variables
+        this.player0Hand = new Hand(orig.getPlayer0Hand());
+        this.player1Hand = new Hand(orig.getPlayer1Hand());
+        this.player0Score = orig.getPlayer0Score();
+        this.player1Score = orig.getPlayer1Score();
+        this.roundNum = orig.getRoundNum();
     }
 
     // Getter methods
@@ -151,11 +160,11 @@ public class GameState {
         //checks if it is currently the player's turn
         if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
             if(this.isPlayerTurn == 0){
-                player0Hand.addHand(deck.get(0));
+                player0Hand.addToHand(deck.get(0));
                 deck.remove(0);
             }
             else {
-                player1Hand.addHand(deck.get(0));
+                player1Hand.addToHand(deck.get(0));
                 deck.remove(0);
             }
             return true;
@@ -177,11 +186,11 @@ public class GameState {
         //checks if it is currently the player's turn
         if(canMove(gameState) == true){
             if(this.isPlayerTurn == 0){
-                player0Hand.addHand(discardPile.get(0));
+                player0Hand.addToHand(discardPile.get(0));
                 discardPile.remove(0);
             }
             else {
-                player1Hand.addHand(discardPile.get(0));
+                player1Hand.addToHand(discardPile.get(0));
                 discardPile.remove(0);
             }
             return true;
@@ -291,11 +300,17 @@ public class GameState {
     }
 
     /**
-     * adds card to a users hand based on the round number
+     * adds card to a users hand
      */
     public void dealHand(ArrayList<Card> inputDeck, Hand user, int round){
-        for(int i = 0; i < round + 2; i++){
-            user.addHand(inputDeck.get(0));
+        if(round == 1) {
+            for (int i = 0; i < 3; i++) {
+                user.addToHand(inputDeck.get(0));
+                inputDeck.remove(0);
+            }
+        }
+        else{
+            user.addToHand(inputDeck.get(0));
             inputDeck.remove(0);
         }
     }

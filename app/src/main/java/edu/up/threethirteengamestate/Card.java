@@ -21,8 +21,6 @@ public class Card {
 
     public int cardId = R.drawable.back_vert;
 
-    private int grouped = 0;
-
     // constructor sets the type of card and scales the card
     public Card(int cType, char suit, int value){
         this.cardType = cType;
@@ -45,6 +43,7 @@ public class Card {
         this.cardType = orig.cardType;
         this.cardRank = orig.cardRank;
         this.cardSuit = orig.cardSuit;
+        scaleCard(this.cardType);
         this.cardId = orig.cardId;
     }
 

@@ -5,13 +5,49 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class Hand {
-    private static ArrayList<Card> userHand = new ArrayList<>();
+    private ArrayList<Card> userHand = null;
+    private ArrayList<ArrayList<Card>> groupings = null;
+    private static final int MAX_NUM_GROUPS = 4;
 
+    /**
+     * Hand Class default constructor
+     * new instance of a hand
+     * creates an ArrayList that contains players cards and
+     * 2D ArrayList that contains groups of cards
+     */
     public Hand(){
+        this.userHand = new ArrayList<Card>();
+        this.groupings = new ArrayList<ArrayList<Card>>(MAX_NUM_GROUPS);
+        for(int i=0; i<MAX_NUM_GROUPS; i++){
+            groupings.add(new ArrayList<Card>());
+        }
+    }
+
+    /**
+     * copy constructor
+     * copies the hand and groupings ArrayLists
+     * @param orig
+     */
+    public Hand(Hand orig){
+        //copy the user hand
+        this.userHand = new ArrayList<Card>();
+        for(Card c : orig.userHand){
+            this.userHand.add(new Card(c));
+        }
+
+        //copy the groupings
+        int count = 0;
+        this.groupings = new ArrayList<ArrayList<Card>>(MAX_NUM_GROUPS);
+        for(ArrayList<Card> group: orig.groupings){
+            for(Card c : group){
+                this.groupings.get(count).add(new Card(c));
+            }
+            count++;
+        }
 
     }
 
-    public void addHand(Card c){
+    public void addToHand(Card c){
         userHand.add(c);
     }
 
@@ -71,8 +107,9 @@ public class Hand {
 
 
     /**
-     *  Create grouping based on complete or incomplete sets and runs. Would be seperate from making a set / run.
-     *  Only check if they have a legal set or run in hand. arrange cards based on user preference (no button) and then checks if the hands are set or run legal
+     *  Create grouping based on complete or incomplete sets and runs. Would be separate from making a set / run.
+     *  Only check if they have a legal set or run in hand. arrange cards based on user preference (no button)
+     *  and then checks if the hands are set or run legal
      *  create group button: creates grouping without it being a set or run.
      *  Check would be implemented when user wants to go out / end of round
      */
@@ -94,6 +131,15 @@ public class Hand {
         }
         // Returns false if there are no cases of legal sets
         return false;
+
+        //the difference between each consecutive card should be 0 in a set
+        int[] checkSet = checkHand(set);
+        for(int i=0; i<checkSet.length;i++){
+            if(checkSet[i] != 0){
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean checkIfRun(ArrayList<Card> run){
@@ -114,15 +160,45 @@ public class Hand {
                 }
             }
         }
-        // Returns false if there are no cases of legal runs
         return false;
+
+        //get the first card's suit
+        char checkSuit = run.get(0).getCardSuit();
+        //iterate through through the run to check if they all have the same suit
+        for(Card c : run){
+            if(c.getCardRank() != checkSuit){
+                return false;
+            }
+        }
+        //check to make sure the difference between consective cards is 1
+        int[] checkRun = checkHand(run);
+        for(int i=0; i<checkRun.length;i++){
+            if(checkRun[i] != 1){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * checks the given hand by returning an array with the differences between each consecutive card
+     * @param hand
+     * @return an int array with calculated differences in rank
+     */
+    public int[] checkHand(ArrayList<Card> hand){
+        int[] checkHand = new int[hand.size()-1];
+        ArrayList<Card> sortedHand = sortByRank(hand);
+        for(int i=0; i<checkHand.length; i++){
+            checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
+        }
+        return checkHand;
     }
 
     public void createGrouping(ArrayList<Card> Hand){
 
     }
 
-    public void addToGroup(Card add, ArrayList<> group){
+    public void addToGroup(Card add, ArrayList<Card> group){
 
     }
 }
