@@ -1,5 +1,6 @@
 package edu.up.threethirteengamestate;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -115,23 +116,6 @@ public class Hand {
      */
 
     public boolean checkIfSet(ArrayList<Card> set){
-        //TODO: checks if input set is a usable set
-        for (Card card : set) {
-            // Gets index of first card so the next two cards can be compared by index
-            int indexStorage = set.indexOf(card);
-            Card secondCard = set.get(indexStorage + 1);
-            Card thirdCard = set.get(indexStorage + 2);
-            // If card one and two have the same rank, continue
-            if (card.getCardRank() == secondCard.getCardRank()) {
-                // If card two and three also have the same rank, a set is legal
-                if (secondCard.getCardRank() == thirdCard.getCardRank()) {
-                    return true;
-                }
-            }
-        }
-        // Returns false if there are no cases of legal sets
-        return false;
-
         //the difference between each consecutive card should be 0 in a set
         int[] checkSet = checkHand(set);
         for(int i=0; i<checkSet.length;i++){
@@ -143,25 +127,6 @@ public class Hand {
     }
 
     public boolean checkIfRun(ArrayList<Card> run){
-        //TODO: Check if input run is a usable run
-        
-        // Makes sure cards are in order by rank before comparison
-        ArrayList<Card> sortedRun = sortByRank(run);
-        for (Card card : run) {
-            // Gets index of first card so the next two cards can be compared by index
-            int indexStorage = run.indexOf(card);
-            Card secondCard = run.get(indexStorage + 1);
-            Card thirdCard = run.get(indexStorage + 2);
-            // Confirms that all cards are in the same suit
-            if (card.getCardSuit() == secondCard.getCardSuit() && secondCard.getCardSuit() == thirdCard.getCardSuit()) {
-                // If the ranks increase by one for each card, a run is legal
-                if (card.getCardRank() == secondCard.getCardRank() + 1 && secondCard.getCardRank() == thirdCard.getCardRank() + 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-
         //get the first card's suit
         char checkSuit = run.get(0).getCardSuit();
         //iterate through through the run to check if they all have the same suit
@@ -170,7 +135,7 @@ public class Hand {
                 return false;
             }
         }
-        //check to make sure the difference between consective cards is 1
+        //check to make sure the difference between consecutive cards is 1
         int[] checkRun = checkHand(run);
         for(int i=0; i<checkRun.length;i++){
             if(checkRun[i] != 1){
