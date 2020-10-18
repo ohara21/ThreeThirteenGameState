@@ -160,8 +160,7 @@ public class Hand {
     }
 
     public void createGrouping(ArrayList<Card> hand){
-        ArrayList<ArrayList<Card>> groups = new ArrayList<>();
-        groups.add(hand);
+        groupings.add(hand);
     }
 
     public void addToGroup(Card add, ArrayList<Card> group){
