@@ -2,7 +2,7 @@ package edu.up.threethirteengamestate;
 
 public class Card {
 
-    // cardType designates if the card if:
+    // cardType designates if the card is:
     // front(1), back (2)
     private int cardType;
     private double scale = 1.25;

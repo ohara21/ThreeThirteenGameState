@@ -159,11 +159,12 @@ public class Hand {
         return checkHand;
     }
 
-    public void createGrouping(ArrayList<Card> Hand){
-
+    public void createGrouping(ArrayList<Card> hand){
+        ArrayList<ArrayList<Card>> groups = new ArrayList<>();
+        groups.add(hand);
     }
 
     public void addToGroup(Card add, ArrayList<Card> group){
-
+        group.add(add);
     }
 }

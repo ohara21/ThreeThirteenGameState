@@ -282,6 +282,7 @@ public class GameState {
      */
     public void setWild(int wildCard){
         //TODO: set wild card to round # + 2
+        wildCard = roundNum + 2;
     }
 
 
