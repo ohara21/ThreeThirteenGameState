@@ -46,6 +46,8 @@ public class GameState {
 
         player0Score = 0;
         player1Score = 0;
+
+        isPlayerTurn = 1;
     }
 
     // GameState clone constructor
@@ -68,6 +70,7 @@ public class GameState {
         this.player0Score = orig.getPlayer0Score();
         this.player1Score = orig.getPlayer1Score();
         this.roundNum = orig.getRoundNum();
+        this.isPlayerTurn = orig.getIsPlayerTurn();
     }
 
     // Getter methods
@@ -126,6 +129,13 @@ public class GameState {
         this.player0Score = player0Score;
     }
 
+    public void nextTurn(){
+        if(isPlayerTurn == 1)
+            isPlayerTurn = 0;
+        else
+            isPlayerTurn = 1;
+    }
+
     public void setRoundNum(int roundNum) {
         this.roundNum = roundNum;
     }
@@ -173,29 +183,26 @@ public class GameState {
     }
 
     /**
-     * determines if player can draw a card from discard pile
+     *  draw a card from discard pile
      * @param gameState
      * @return
      */
-    public boolean playerDrawDiscard(GameState gameState){
+    public void playerDrawDiscard(GameState gameState){
         //checks if there are cards in discard
         if(discardPile.size() == 0){
-            return false;
+            return;
         }
 
         //checks if it is currently the player's turn
         if(canMove(gameState) == true){
             if(this.isPlayerTurn == 0){
                 player0Hand.addToHand(discardPile.get(0));
-                discardPile.remove(0);
             }
             else {
                 player1Hand.addToHand(discardPile.get(0));
-                discardPile.remove(0);
             }
-            return true;
+            discardPile.remove(0);
         }
-        return false;
     }
 
     /**
@@ -206,11 +213,11 @@ public class GameState {
     public boolean playerDiscard(GameState gameState){
         //checks if it is currently the player's turn
         if(canMove(gameState) == true) {
-            if((this.isPlayerTurn == 0) && (this.player0Hand.getSize() == (this.roundNum + 3))){
+            if((this.isPlayerTurn == 0) && (this.player0Hand.getSize() == (this.roundNum + 2))){
                 Log.d("player 0 can discard",String.valueOf(player0Hand.getSize()));
                 return true;
             }
-            else if((this.isPlayerTurn == 1) && (this.player1Hand.getSize() == (this.roundNum + 3))){
+            else if((this.isPlayerTurn == 1) && (this.player1Hand.getSize() == (this.roundNum + 2))){
                 Log.d("player 1 can discard",String.valueOf(player1Hand.getSize()));
                 return true;
             }
@@ -248,34 +255,6 @@ public class GameState {
     }
 
 
-//    public static void sortBySuit(ArrayList<Card> input){
-//        Collections.sort(input, new Comparator<Card>(){
-//            @Override
-//            public int compare(Card c1, Card c2){
-//                if(c1.getCardSuit() < c2.getCardSuit()){
-//                    return 1;
-//                }
-//                if(c1.getCardSuit() > c2.getCardSuit()){
-//                    return -1;
-//                }
-//                return 0;
-//            }
-//        });
-//    }
-//
-//    public static void sortByRank(ArrayList<Card> hand) {
-//        int n = hand.size();
-//        for (int i = 1; i < n; i++) {
-//            int key = hand.get(i).getCardRank();
-//            int j = i - 1;
-//
-//            while (j >= 0 && hand.get(j).getCardRank() > key) {
-//                Collections.swap(hand, j + 1, j);
-//                j = j - 1;
-//            }
-//        }
-//    }
-
     /**
      * Sets a card value to the wild card based on the hand count
      * @param wildCard
@@ -304,15 +283,24 @@ public class GameState {
      * adds card to a users hand
      */
     public void dealHand(ArrayList<Card> inputDeck, Hand user, int round){
-        if(round == 1) {
-            for (int i = 0; i < 3; i++) {
-                user.addToHand(inputDeck.get(0));
-                inputDeck.remove(0);
-            }
-        }
-        else{
+        for(int i = 1; i <= round + 1; i++){
             user.addToHand(inputDeck.get(0));
             inputDeck.remove(0);
+        }
+    }
+
+    /**
+     * looks through hand and removes card to discard pile
+     * @param user
+     * @param card
+     */
+    public void discardCard(Hand user, Card card){
+        for(int i = 0; i < user.getSize(); i++){
+            if(user.getHand().get(i) == card){
+                discardPile.add(user.getHand().get(i));
+                user.getHand().remove(i);
+
+            }
         }
     }
 

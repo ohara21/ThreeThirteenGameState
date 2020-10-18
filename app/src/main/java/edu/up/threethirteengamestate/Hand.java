@@ -48,19 +48,13 @@ public class Hand {
 
     }
 
-    public void addToHand(Card c){
-        userHand.add(c);
-    }
+    public void addToHand(Card c){userHand.add(c);}
 
-    public void setHand(ArrayList<Card> hand){
-        this.userHand = hand;
-    }
+    public void setHand(ArrayList<Card> hand){this.userHand = hand;}
 
     public ArrayList<Card> getHand(){return this.userHand;}
 
-    public int getSize(){
-       return this.userHand.size();
-    }
+    public int getSize(){return this.userHand.size();}
 
 
 
