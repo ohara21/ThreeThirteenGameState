@@ -1,5 +1,9 @@
 package edu.up.threethirteengamestate;
-
+/**
+ * @description: Hand class contains information and methods pertaining to each player's hand
+ * @author: Nick Ohara, Adrian Muth, Shane Matsushima, Lindsey Warren
+ * @version: 10/20/2020
+ */
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,17 +101,18 @@ public class Hand {
         return hand;
     }
 
-
-
     /**
-     *  Create grouping based on complete or incomplete sets and runs. Would be separate from making a set / run.
-     *  Only check if they have a legal set or run in hand. arrange cards based on user preference (no button)
-     *  and then checks if the hands are set or run legal
-     *  create group button: creates grouping without it being a set or run.
-     *  Check would be implemented when user wants to go out / end of round
+     * checks if a given arrayList of cards is a valid set
+     * @param set a given set
+     * @return whether it's valid or not
      */
-
     public boolean checkIfSet(ArrayList<Card> set){
+
+        //checks to make sure set isn't empty and is not null pointer
+        if(set.isEmpty() || (set == null)){
+            return false;
+        }
+
         //the difference between each consecutive card should be 0 in a set
         int[] checkSet = checkHand(set);
         for(int i=0; i<checkSet.length;i++){
@@ -118,15 +123,26 @@ public class Hand {
         return true;
     }
 
+    /**
+     * checks if a given arrayList of cards is a valid run
+     * @param run a given run
+     * @return whether it's valid or not
+     */
     public boolean checkIfRun(ArrayList<Card> run){
+        //checks to make sure run isn't empty and is not null pointer
+        if(run.isEmpty() || (run == null)){
+            return false;
+        }
         //get the first card's suit
         char checkSuit = run.get(0).getCardSuit();
+
         //iterate through through the run to check if they all have the same suit
         for(Card c : run){
             if(c.getCardRank() != checkSuit){
                 return false;
             }
         }
+
         //check to make sure the difference between consecutive cards is 1
         int[] checkRun = checkHand(run);
         for(int i=0; i<checkRun.length;i++){
@@ -139,7 +155,7 @@ public class Hand {
 
     /**
      * checks the given hand by returning an array with the differences between each consecutive card
-     * @param hand
+     * @param hand a given user's hand
      * @return an int array with calculated differences in rank
      */
     public int[] checkHand(ArrayList<Card> hand){

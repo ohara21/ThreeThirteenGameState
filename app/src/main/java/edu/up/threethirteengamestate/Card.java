@@ -1,5 +1,9 @@
 package edu.up.threethirteengamestate;
-
+/**
+ * @description: Card class contains information on each card used in Three Thirteen
+ * @author: Nick Ohara, Adrian Muth, Shane Matsushima, Lindsey Warren
+ * @version: 10/20/2020
+ */
 public class Card {
 
     // cardType designates if the card is:

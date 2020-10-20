@@ -1,5 +1,9 @@
 package edu.up.threethirteengamestate;
-
+/**
+ * @description: GameState class contains information about the current state of the game
+ * @author: Nick Ohara, Adrian Muth, Shane Matsushima, Lindsey Warren
+ * @version: 10/20/2020
+ */
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -9,12 +13,16 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class GameState {
-/**
-     * External Citation: fill in later
-     * https://stackoverflow.com/questions/4233626/allow-multi-line-in-edittext-view-in-android
+
+    /**
+     * External Citation
+     * Problem: Didn't know how to make multi-line edit text
+     * Source: https://stackoverflow.com/questions/4233626/allow-multi-line-in-edittext-view-in-android
+     * Solution: used code in activity_main.xml
      */
+
     //creating a deck of 52 cards
-    private static char suite[] = new char[] {'c','s','h','d'};
+    private static char[] suite = new char[] {'c','s','h','d'};
     private ArrayList<Card> deck = new ArrayList<Card>();
     private ArrayList<Card> discardPile = new ArrayList<Card>();
     private Hand player0Hand  = new Hand();
@@ -25,7 +33,9 @@ public class GameState {
     private int isPlayerTurn;
     private int wildCard;
 
-    // Gamestate initialization constructor
+    /**
+     * Gamestate initialization constructor
+     */
     public GameState() {
         //populate deck with 52 card objects then shuffle deck randomly
         for(int s = 0; s < 4; s++) {
@@ -39,6 +49,7 @@ public class GameState {
         discardPile.add(deck.get(0));
         deck.remove(0);
 
+        //sets round number and the wild card
         roundNum = 1;
         wildCard = roundNum + 2;
 
@@ -46,13 +57,18 @@ public class GameState {
         dealHand(deck, player0Hand, roundNum);
         dealHand(deck, player1Hand, roundNum);
 
+        //each player starts with a score of 0
         player0Score = 0;
         player1Score = 0;
 
+        //player 0 goes first
         isPlayerTurn = 0;
     }
 
-    // GameState clone constructor
+    /**
+     * GameState clone constructor
+     * @param orig
+     */
     public GameState(GameState orig) {
         //copy deck ArrayList
         this.deck = new ArrayList<>();
@@ -73,9 +89,13 @@ public class GameState {
         this.player1Score = orig.getPlayer1Score();
         this.roundNum = orig.getRoundNum();
         this.isPlayerTurn = orig.getIsPlayerTurn();
+        this.wildCard = orig.getWildCard();
     }
 
-    // Getter methods
+    /**
+     * all getter methods for GameState class
+     * @return
+     */
     public ArrayList<Card> getDeck() {
         return deck;
     }
@@ -106,7 +126,14 @@ public class GameState {
 
     public int getIsPlayerTurn() {return isPlayerTurn;}
 
-    // Setter methods
+    public int getWildCard() {
+        return wildCard;
+    }
+
+    /**
+     * all setter methods for GameState class
+     * @param deck
+     */
     public void setDeck(ArrayList<Card> deck) {
         this.deck = deck;
     }
@@ -131,6 +158,13 @@ public class GameState {
         this.player0Score = player0Score;
     }
 
+    public void setWildCard(int wildCard) {
+        this.wildCard = wildCard;
+    }
+
+    /**
+     * changes which player can take actions
+     */
     public void nextTurn(){
         if(isPlayerTurn == 1)
             isPlayerTurn = 0;
@@ -217,6 +251,11 @@ public class GameState {
      * @return
      */
     public boolean playerGoOut(GameState gameState){
+        //check to make sure there are groups
+        if(currentPlayerHand().getGroupings().get(0).isEmpty()){
+            return false;
+        }
+
         //checks if it is currently the player's turn and can discard
         if(playerDiscard(gameState)){
             int numValidGroups = 0;
@@ -229,8 +268,8 @@ public class GameState {
                 numGroups++;
             }
 
-            //check to make sure there are groups and that all the groups ar valid
-            if((numValidGroups!=0) && (numValidGroups==numGroups)){
+            //checkthat all the groups ar valid
+            if(numValidGroups==numGroups){
                 return true;
             }
         }

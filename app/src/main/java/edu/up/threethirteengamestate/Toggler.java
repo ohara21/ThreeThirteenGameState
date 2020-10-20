@@ -1,4 +1,9 @@
 package edu.up.threethirteengamestate;
+/**
+ * @description: Toggler class shows the GameState's methods by calling toString
+ * @author: Nick Ohara, Adrian Muth, Shane Matsushima, Lindsey Warren
+ * @version: 10/20/2020
+ */
 
 import android.view.View;
 import android.widget.EditText;
@@ -42,12 +47,12 @@ public class Toggler implements View.OnClickListener {
         text.append("Player 1 draws from the discard pile\n");
 
         //player 1 tries to go out
-//        if(firstInstance.playerGoOut(firstInstance)){
-//            text.append("Player 1 tried Going Out and they could\n");
-//        }
-//        else{
-//            text.append("Player 1 tried Going Out but they couldn't\n");
-//        }
+        if(firstInstance.playerGoOut(firstInstance)){
+            text.append("Player 1 tried Going Out successfully\n\n");
+        }
+        else{
+            text.append("Player 1 tried Going Out but they didn't have the right hand\n\n");
+        }
 
         //create new instance using default called thirdInstance
         GameState thirdInstance = new GameState();
