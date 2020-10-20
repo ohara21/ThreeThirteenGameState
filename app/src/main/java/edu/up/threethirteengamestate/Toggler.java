@@ -11,45 +11,67 @@ public class Toggler implements View.OnClickListener {
    
     @Override
     public void onClick(View view) {
-        //TODO: clear text
+        //clear text
         text.getText().clear();
 
-        //TODO: create gamestate called firstInstance
+        //create gamestate called firstInstance
         GameState firstInstance = new GameState();
 
-        //TODO: create deep copy and call it secondInstance
+        //create deep copy and call it secondInstance
         GameState secondInstance = new GameState(firstInstance);
 
-        //TODO: using firstInstance, call all methods in gamestate to make legal move. after each action print to EditText. should append
-
-        //draw card
+        //using firstInstance, call all methods in gamestate to make legal move.
+        //after each action, append to EditText
+        //player 0 draws card from deck
+        text.append("Initialization: Both players are dealt three cards and the discard pile is created.\n");
         firstInstance.playerDrawDeck(firstInstance);
-        text.append("Player 1 draws a card from the deck");
+        text.append("Player 0 draws a card from the deck\n");
 
-        //discard a card
-        firstInstance.discardCard(firstInstance.getPlayer1Hand(), firstInstance.getPlayer1Hand().getHand().get(0));
-        text.append("Player 1 discards the first card in their hand to the discard pile");
+        //player 0 discards a card
+        if(firstInstance.playerDiscard(firstInstance)) {
+            firstInstance.discardCard(firstInstance.getPlayer0Hand(), firstInstance.getPlayer0Hand().getHand().get(0));
+            text.append("Player 0 discards the first card in their hand to the discard pile\n");
+        }
 
         //set player turn to next
         firstInstance.nextTurn();
-        text.append("turn is switched over to the other player");
+        text.append("turn is switched over to the other player\n");
 
-        //TODO: create new instance using default called thirdInstance
+        //player 1 draws card from discard pile
+        firstInstance.playerDrawDiscard(firstInstance);
+        text.append("Player 1 draws from the discard pile\n");
+
+        //player 1 tries to go out
+//        if(firstInstance.playerGoOut(firstInstance)){
+//            text.append("Player 1 tried Going Out and they could\n");
+//        }
+//        else{
+//            text.append("Player 1 tried Going Out but they couldn't\n");
+//        }
+
+        //create new instance using default called thirdInstance
         GameState thirdInstance = new GameState();
 
-        //TODO: deep copy thirdInstance and call it fourthInstance
+        //deep copy thirdInstance and call it fourthInstance
         GameState fourthInstance = new GameState(thirdInstance);
 
-        //TODO: call toString() on secondInstance and fourthInstance. compare and print out result
-        if(secondInstance.toString().equals(fourthInstance.toString()))
-            text.append("Both instances are the same");
-        else
-            text.append("Instances have different Strings");
+        //call toString() on secondInstance and fourthInstance. compare and print out result
+        if(secondInstance.toString().equals(fourthInstance.toString())) {
+            text.append("Both instances are the same\n\n");
+        }
+        else {
+            text.append("Instances have different Strings\n\n");
+        }
 
 
-        //TODO: print both strings to EditTExt appending
-            text.append(secondInstance.toString());
-            text.append(fourthInstance.toString());
-
+        //print both strings to EditTExt appending
+        text.append("First Instance toString:\n");
+        text.append(firstInstance.toString());
+        text.append("\n\n");
+        text.append("Second Instance toString:\n");
+        text.append(secondInstance.toString());
+        text.append("\n\n");
+        text.append("Fourth Instance toString:\n");
+        text.append(fourthInstance.toString());
     }
 }

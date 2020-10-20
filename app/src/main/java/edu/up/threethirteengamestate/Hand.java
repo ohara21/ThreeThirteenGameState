@@ -56,11 +56,9 @@ public class Hand {
 
     public int getSize(){return this.userHand.size();}
 
-
-
-
-
-
+    public ArrayList<ArrayList<Card>> getGroupings() {
+        return groupings;
+    }
 
     /**
      * sorts a given hand by their rank in ascending order

@@ -23,6 +23,7 @@ public class GameState {
     private int player0Score;
     private int player1Score;
     private int isPlayerTurn;
+    private int wildCard;
 
     // Gamestate initialization constructor
     public GameState() {
@@ -39,6 +40,7 @@ public class GameState {
         deck.remove(0);
 
         roundNum = 1;
+        wildCard = roundNum + 2;
 
         //populate player 0 and player 1 hands with three cards from deck
         dealHand(deck, player0Hand, roundNum);
@@ -47,7 +49,7 @@ public class GameState {
         player0Score = 0;
         player1Score = 0;
 
-        isPlayerTurn = 1;
+        isPlayerTurn = 0;
     }
 
     // GameState clone constructor
@@ -145,11 +147,11 @@ public class GameState {
         String round = "Round number: " + roundNum;
         String deckSize = "Deck card amount: " + deck.size();
         String discardSize = "Discard pile amount: " + discardPile.size();
-        String playerCard = "Player card amount: " + player0Hand.getSize();
-        String computerCard = "Computer card amount: " + player1Hand.getSize();
-        String turn = "Your turn? T/F: " + isPlayerTurn;
-        String playerScoreString = "Your score: " + player0Score;
-        String computerScoreString = "Computer's score: " + player1Score;
+        String playerCard = "Player 0 card amount: " + player0Hand.getSize();
+        String computerCard = "Player 1 card amount: " + player1Hand.getSize();
+        String turn = "Player " + isPlayerTurn + " turn";
+        String playerScoreString = "Player 0 score: " + player0Score;
+        String computerScoreString = "Player 1 score: " + player1Score;
         String toString = round + "\n" + deckSize + "\n" + discardSize + "\n" + playerCard + "\n"
                 + computerCard + "\n" + turn + "\n" + playerScoreString + "\n"
                 + computerScoreString;
@@ -167,16 +169,10 @@ public class GameState {
             return false;
         }
 
-        //checks if it is currently the player's turn
-        if(gameState.getIsPlayerTurn() == this.isPlayerTurn){
-            if(this.isPlayerTurn == 0){
-                player0Hand.addToHand(deck.get(0));
-                deck.remove(0);
-            }
-            else {
-                player1Hand.addToHand(deck.get(0));
-                deck.remove(0);
-            }
+        //removes card from deck and adds it to the current player's hand
+        if(canMove(gameState)){
+            currentPlayerHand().addToHand(deck.get(0));
+            deck.remove(0);
             return true;
         }
         return false;
@@ -194,13 +190,9 @@ public class GameState {
         }
 
         //checks if it is currently the player's turn
+        //removes card from discard pile and adds it to the current player's hand
         if(canMove(gameState) == true){
-            if(this.isPlayerTurn == 0){
-                player0Hand.addToHand(discardPile.get(0));
-            }
-            else {
-                player1Hand.addToHand(discardPile.get(0));
-            }
+            currentPlayerHand().addToHand(discardPile.get(0));
             discardPile.remove(0);
         }
     }
@@ -212,15 +204,8 @@ public class GameState {
      */
     public boolean playerDiscard(GameState gameState){
         //checks if it is currently the player's turn
-        if(canMove(gameState) == true) {
-            if((this.isPlayerTurn == 0) && (this.player0Hand.getSize() == (this.roundNum + 2))){
-                Log.d("player 0 can discard",String.valueOf(player0Hand.getSize()));
-                return true;
-            }
-            else if((this.isPlayerTurn == 1) && (this.player1Hand.getSize() == (this.roundNum + 2))){
-                Log.d("player 1 can discard",String.valueOf(player1Hand.getSize()));
-                return true;
-            }
+        if(canMove(gameState) && (currentPlayerHand().getSize() == (this.roundNum+3))){
+            return true;
         }
         return false;
     }
@@ -232,15 +217,25 @@ public class GameState {
      * @return
      */
     public boolean playerGoOut(GameState gameState){
-        int[] checkGoOut = null;
-        //checks if it is currently the player's turn
-        if(canMove(gameState) == true){
-            //need to check if player's hand can Go Out
+        //checks if it is currently the player's turn and can discard
+        if(playerDiscard(gameState)){
+            int numValidGroups = 0;
+            int numGroups = 0;
+            //iterate through player's groupings to check for valid runs and sets
+            for(ArrayList<Card> groups : currentPlayerHand().getGroupings()){
+                if(currentPlayerHand().checkIfRun(groups) || currentPlayerHand().checkIfSet(groups)){
+                    numValidGroups++;
+                }
+                numGroups++;
+            }
+
+            //check to make sure there are groups and that all the groups ar valid
+            if((numValidGroups!=0) && (numValidGroups==numGroups)){
+                return true;
+            }
         }
         return false;
     }
-
-
 
     /**
      * determines if the player can take action
@@ -257,33 +252,29 @@ public class GameState {
 
     /**
      * Sets a card value to the wild card based on the hand count
-     * @param wildCard
      */
-    public void setWild(int wildCard){
+    public void setWild(){
         //TODO: set wild card to round # + 2
         wildCard = roundNum + 2;
     }
 
-
-    /**
-     * checks the given hand by returning an array with the differences between each consecutive card
-     * @param hand
-     * @return an int array with calculated differences in rank
-     */
-    public int[] checkHand(ArrayList<Card> hand){
-        int[] checkHand = new int[hand.size()-1];
-        ArrayList<Card> sortedHand = player0Hand.sortByRank(hand);
-        for(int i=0; i<checkHand.length; i++){
-            checkHand[i] = sortedHand.get(i+1).getCardRank()-sortedHand.get(i).getCardRank();
-        }
-        return checkHand;
-    }
-
     /**
      * adds card to a users hand
+     * in round 1, player's receive 3 cards
+     * in remaining rounds, player receives 1 card per round
      */
     public void dealHand(ArrayList<Card> inputDeck, Hand user, int round){
-        for(int i = 1; i <= round + 1; i++){
+        setWild();
+        if(round != roundNum){
+            return;
+        }
+        if(round == 1) {
+            for (int i = 0; i <= round + 1; i++) {
+                user.addToHand(inputDeck.get(0));
+                inputDeck.remove(0);
+            }
+        }
+        else{
             user.addToHand(inputDeck.get(0));
             inputDeck.remove(0);
         }
@@ -304,6 +295,18 @@ public class GameState {
         }
     }
 
+    /**
+     * returns the current player's hand depending on turn
+     * @return
+     */
+    public Hand currentPlayerHand(){
+        if(this.isPlayerTurn == 0){
+            return player0Hand;
+        }
+        else{
+            return player1Hand;
+        }
+    }
 
 
 }
